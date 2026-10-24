@@ -24,8 +24,13 @@ export function VideoSection() {
               className="h-full w-full object-cover"
               controls
               playsInline
+              muted={false}
               preload="metadata"
               controlsList="nodownload"
+              onLoadedMetadata={(event) => {
+                event.currentTarget.muted = false;
+                event.currentTarget.volume = 1;
+              }}
             />
           ) : (
             <div className="flex h-full items-center justify-center px-6 text-center text-sm text-luxury-white/80">
