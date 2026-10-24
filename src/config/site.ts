@@ -5,7 +5,7 @@ import memory3 from '../../cutey/km.jpeg';
 export const SITE_CONFIG = {
   recipientName: 'KARTHI',
   birthdayDate: '2026-10-31',
-  secretCode: 'KARTHI',
+  secretCode: 'PATTU',
   contactEmail: 'hello@karthibirthday.com',
   analyticsId: 'G-XXXXXXXXXX',
 } as const;
