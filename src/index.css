@@ -1,0 +1,120 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply font-body antialiased overflow-x-hidden;
+  }
+
+  .dark body {
+    @apply bg-luxury-black text-luxury-white;
+  }
+
+  .light body {
+    @apply bg-luxury-white text-gray-900;
+  }
+
+  ::selection {
+    @apply bg-luxury-gold/30 text-luxury-gold-light;
+  }
+}
+
+@layer components {
+  .glass {
+    @apply backdrop-blur-xl border border-white/10 shadow-glass;
+  }
+
+  .dark .glass {
+    @apply bg-white/5;
+  }
+
+  /* Temporarily disabled to work around build parsing error */
+  /* .light .glass {
+    @apply bg-black/5 border-black/10;
+  } */
+
+  .glass-gold {
+    @apply glass border-luxury-gold/20 shadow-luxury;
+  }
+
+  .text-gradient-gold {
+    @apply bg-clip-text text-transparent bg-gold-gradient;
+  }
+
+  .btn-luxury {
+    @apply relative px-8 py-3 rounded-full font-sans font-medium tracking-wider uppercase text-sm
+           bg-gold-gradient text-luxury-black overflow-hidden transition-all duration-500
+           hover:shadow-glow hover:scale-105 active:scale-95;
+  }
+
+  .btn-luxury-outline {
+    @apply relative px-8 py-3 rounded-full font-sans font-medium tracking-wider uppercase text-sm
+           border border-luxury-gold/50 text-luxury-gold transition-all duration-500
+           hover:bg-luxury-gold/10 hover:shadow-glow hover:scale-105 active:scale-95;
+  }
+
+  .section-padding {
+    @apply px-4 sm:px-6 lg:px-8 py-20 md:py-28;
+  }
+
+  .section-title {
+    @apply font-display text-4xl md:text-5xl lg:text-6xl font-bold text-center mb-4;
+  }
+
+  .section-subtitle {
+    @apply font-body text-lg md:text-xl text-center max-w-2xl mx-auto opacity-70 mb-12;
+  }
+}
+
+.cursor-glow {
+  position: fixed;
+  width: 300px;
+  height: 300px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(212, 175, 55, 0.15) 0%, transparent 70%);
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  z-index: 9999;
+  mix-blend-mode: screen;
+  transition: opacity 0.3s;
+}
+
+@media (max-width: 768px) {
+  .cursor-glow {
+    display: none;
+  }
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-luxury-gold/30 rounded-full;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-luxury-gold/50;
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
