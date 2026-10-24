@@ -37,7 +37,7 @@ const pwaPlugin = VitePWA({
 });
 
 export default defineConfig({
-  base: process.env.GITHUB_ACTIONS ? '/karthi-birthday-wishes/' : '/',
+  base: process.env.GITHUB_ACTIONS ? '/karthi-birthday/' : '/',
   plugins: [
     react(),
     // Only include the PWA plugin in non-production builds to avoid Workbox

@@ -20,7 +20,7 @@ A romantic, cinematic birthday surprise website based on the uploaded reference 
 
 The `main` branch deploys automatically to GitHub Pages through the workflow in
 `.github/workflows/deploy.yml`. After the first deployment completes, the site
-is available at `https://kumaranprabakaran8-jpg.github.io/karthi-birthday-wishes/`.
+is available at `https://kumaranprabakaran8-jpg.github.io/karthi-birthday/`.
 
 The deployed website is public. Its front-end password screen does not restrict
 access to the source code or media files.
