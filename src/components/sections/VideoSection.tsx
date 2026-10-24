@@ -21,7 +21,7 @@ export function VideoSection() {
           {HAS_VIDEO ? (
             <video
               src={VIDEO_URL}
-              className="h-full w-full object-contain"
+              className="h-full w-full object-cover"
               controls
               playsInline
               muted={false}
