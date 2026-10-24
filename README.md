@@ -37,7 +37,7 @@ Most birthday content is in `src/config/site.ts`:
 
 Replace the sample photos in `cutey/` with your own photos if you want. Keep filenames the same, or update the imports in `src/config/site.ts`.
 
-The gift-box surprise uses `public/assets/karthi-surprise.png` (served as `/assets/karthi-surprise.png`). Replace that file with your own PNG photo, keeping the same filename, to change the revealed picture.
+The gift-box surprise uses `public/assets/karthi-surprise.jpeg` (served as `/assets/karthi-surprise.jpeg`). Replace that file with your own JPEG photo, keeping the same filename, to change the revealed picture.
 
 ## Notes
 
