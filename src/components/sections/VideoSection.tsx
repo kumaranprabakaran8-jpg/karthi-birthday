@@ -17,11 +17,11 @@ export function VideoSection() {
         viewport={{ once: true }}
         className="max-w-4xl mx-auto glass-gold rounded-2xl overflow-hidden p-2 shadow-luxury"
       >
-        <div className="relative aspect-video rounded-xl overflow-hidden bg-black/50">
+        <div className="relative mx-auto aspect-[9/16] w-full max-w-sm rounded-xl overflow-hidden bg-black/50">
           {HAS_VIDEO ? (
             <video
               src={VIDEO_URL}
-              className="h-full w-full object-cover"
+              className="h-full w-full object-contain"
               controls
               playsInline
               muted={false}
