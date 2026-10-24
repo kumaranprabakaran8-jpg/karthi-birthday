@@ -3,7 +3,7 @@ import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { SectionWrapper } from '@/components/ui/SectionWrapper';
 import './GiftBoxSection.css';
 
-const PHOTO_PATH = '/assets/karthi-surprise.jpeg';
+const PHOTO_PATH = `${import.meta.env.BASE_URL}assets/karthi-surprise.jpeg`;
 const CELEBRATION_PARTICLES = Array.from({ length: 24 }, (_, index) => ({
   id: index,
   symbol: ['♥', '✦', '🌹', '✨'][index % 4],

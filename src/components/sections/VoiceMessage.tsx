@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { HiPlay, HiPause } from 'react-icons/hi';
 import { SectionWrapper } from '@/components/ui/SectionWrapper';
 
-const VOICE_URL = '/audio/your-voice.ogg';
+const VOICE_URL = `${import.meta.env.BASE_URL}audio/your-voice.ogg`;
 
 export function VoiceMessage() {
   const [playing, setPlaying] = useState(false);
