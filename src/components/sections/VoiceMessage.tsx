@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { HiPlay, HiPause } from 'react-icons/hi';
 import { SectionWrapper } from '@/components/ui/SectionWrapper';
 
-const VOICE_URL = `${import.meta.env.BASE_URL}audio/your-voice.ogg`;
+const VOICE_URL = `${import.meta.env.BASE_URL}audio/voice-message.mp3`;
 
 export function VoiceMessage() {
   const [playing, setPlaying] = useState(false);
@@ -85,7 +85,7 @@ export function VoiceMessage() {
         </div>
 
         <p className="text-center font-body italic opacity-60 mt-4 text-sm">
-          Add your voice message as an MP3 file in the audio folder to play it here.
+          A personal voice message, recorded just for you.
         </p>
       </motion.div>
     </SectionWrapper>

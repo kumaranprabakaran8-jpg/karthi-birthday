@@ -39,6 +39,8 @@ Replace the sample photos in `cutey/` with your own photos if you want. Keep fil
 
 The gift-box surprise uses `public/assets/karthi-surprise.jpeg` (served as `/assets/karthi-surprise.jpeg`). Replace that file with your own JPEG photo, keeping the same filename, to change the revealed picture.
 
+The voice-message player uses `public/audio/voice-message.mp3`. Replace this file with your own MP3 to update the recorded message.
+
 ## Notes
 
 - This is the editable source project; `node_modules` is not included. Run `npm install` once.

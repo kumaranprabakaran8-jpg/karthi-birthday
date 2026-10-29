@@ -5,7 +5,7 @@ import memory3 from '../../cutey/km.jpeg';
 export const SITE_CONFIG = {
   recipientName: 'KARTHI',
   birthdayDate: '2026-10-31',
-  secretCode: 'PATTU',
+  secretCode: 'KARTHI',
   contactEmail: 'hello@karthibirthday.com',
   analyticsId: 'G-XXXXXXXXXX',
 } as const;
@@ -17,16 +17,18 @@ export const INTRO_LINES = [
   'Welcome to your story, KARTHI.',
 ];
 
-export const LOVE_LETTER = `My Dearest KARTHI,
+export const LOVE_LETTER = `Happy Birthday, My Pattu! 🎂💗
 
-On this beautiful day, I want the stars themselves to pause and witness how extraordinary you are. Your smile has the power to turn ordinary moments into golden memories. Your kindness flows like moonlight — gentle, steady, and impossible to forget.
+Pattu, un birthday-va un kooda direct-ah celebrate panna mudiyalanu konjam feel aagudhu. Aana, un special day-la unakku oru beautiful surprise kudukkanum nu aasai patten. Adhukkaga dhaan indha little website, made with lots of love, just for you. 💌
 
-Every laugh we've shared, every quiet moment, every adventure — they all weave together into the most precious tapestry of my life. You are not just someone I celebrate today; you are someone I thank the universe for every single day.
+You are a very special part of my life. already athiga time sollita,na unkooda irudhalum illa nalum nee eppomey happy ahh irukanum🫂🎀❤️‍🩹 na unmela vachiruka luv and care eppomey down agadhu pattu 🧿😘💋
 
-You deserve every sparkle, every flower, every dream come true. May this year bring you the same warmth and joy you so effortlessly give to everyone around you.
+Distance irundhaalum, indha small surprise moolama un birthday-a konjam special-aakka mudiyumnu namburen.
 
-With all my heart, today and always,
-Forever Yours ✨`;
+Once again, Happy Birthday, Pattu! 🎂💗
+
+With lots of love,
+Mine chello 💌`;
 
 export const REASONS = [
   {
@@ -91,13 +93,13 @@ export const TIMELINE = [
 export const GALLERY_IMAGES = [
   {
     id: 1,
-    src: memory1,
+    src: memory2,
     alt: 'An illustrated portrait of the two of you together',
     caption: 'Our little world, together',
   },
   {
     id: 2,
-    src: memory2,
+    src: memory1,
     alt: 'An illustrated moment holding hands',
     caption: 'Every moment, hand in hand',
   },
@@ -130,10 +132,17 @@ export const MUSIC_PLAYLIST = [
   },
 ];
 
-export const FINAL_MESSAGE = `KARTHI, as this celebration comes to a gentle close, know that my love for you does not fade with the fireworks. It grows with every sunrise, every shared silence, every tomorrow we get to write together.
+export const FINAL_MESSAGE = `Happy Birthday, My Pattu! 🎂💗
 
-Thank you for being you. Thank you for choosing to share your beautiful life with me.
+Pattu, un birthday-va un kooda direct-ah celebrate panna mudiyalanu konjam feel aagudhu. Aana, un special day-la unakku oru beautiful surprise kudukkanum nu aasai patten. Adhukkaga dhaan indha little website, made with lots of love, just for you. 💌
 
-Happy Birthday, my love. This is only the beginning.`;
+You are a very special part of my life. already athiga time sollita,na unkooda irudhalum illa nalum nee eppomey happy ahh irukanum🫂🎀❤️‍🩹 na unmela vachiruka luv and care eppomey down agadhu pattu 🧿😘💋
+
+Distance irundhaalum, indha small surprise moolama un birthday-a konjam special-aakka mudiyumnu namburen.
+
+Once again, Happy Birthday, Pattu! 🎂💗
+
+With lots of love,
+Mine chello 💌`;
 
 export const FIREWORKS_MESSAGE = 'Happy Birthday, KARTHI! You are the brightest star in my sky. ✨';

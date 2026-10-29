@@ -51,33 +51,43 @@ export function PhotoGallery() {
         </button>
       </div>
 
-      {/* Masonry Grid */}
-      <div className="columns-1 sm:columns-2 lg:columns-3 gap-4 max-w-6xl mx-auto space-y-4">
+      {/* Memory line-by-line story rows */}
+      <div className="flex flex-col gap-6 max-w-5xl mx-auto">
         {GALLERY_IMAGES.map((img, index) => (
           <motion.div
             key={img.id}
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ delay: index * 0.1 }}
-            className="break-inside-avoid"
+            transition={{ delay: index * 0.12 }}
+            className={`flex flex-col lg:flex-row items-center gap-4 lg:gap-6 ${index % 2 === 0 ? 'lg:flex-row' : 'lg:flex-row-reverse'}`}
           >
             <button
               onClick={() => openLightbox(index)}
-              className="group relative w-full rounded-2xl overflow-hidden glass-gold focus:outline-none focus:ring-2 focus:ring-luxury-gold"
+              className="group relative w-full lg:w-[58%] overflow-hidden rounded-[28px] border border-luxury-gold/30 bg-black/20 shadow-[0_0_30px_rgba(210,170,90,0.18)] focus:outline-none focus:ring-2 focus:ring-luxury-gold"
               aria-label={`View ${img.caption}`}
             >
               <img
                 src={img.src}
                 alt={img.alt}
                 loading="lazy"
-                className="w-full object-cover transition-transform duration-700 group-hover:scale-110"
+                className="h-[260px] sm:h-[320px] w-full object-cover transition-transform duration-700 group-hover:scale-110"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end p-4">
-                <p className="font-body text-luxury-white text-sm">{img.caption}</p>
-              </div>
-              <span className="absolute top-3 right-3 text-luxury-pink opacity-0 group-hover:opacity-100 transition-opacity">♥</span>
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent opacity-90" />
+              <span className="absolute top-4 right-4 text-xl text-luxury-pink">♥</span>
             </button>
+
+            <div className="w-full lg:w-[42%] rounded-[28px] border border-luxury-gold/20 bg-white/5 backdrop-blur-sm p-5 sm:p-6 text-center lg:text-left">
+              <p className="font-sans text-[10px] sm:text-xs uppercase tracking-[0.35em] text-luxury-gold/80 mb-3">
+                Memory {String(index + 1).padStart(2, '0')}
+              </p>
+              <h3 className="font-display text-2xl sm:text-3xl text-luxury-gold-light mb-3">{img.caption}</h3>
+              <p className="font-body text-sm sm:text-base text-luxury-white/80 leading-relaxed">
+                {index === 0 && 'A moment so beautiful, it feels like the universe paused just to let us keep it.'}
+                {index === 1 && 'Every hand in hand step, every smile, every glance — all of it became part of our story.'}
+                {index === 2 && 'A tiny little promise of love, wrapped in joy, warmth, and the dream of forever.'}
+              </p>
+            </div>
           </motion.div>
         ))}
       </div>
