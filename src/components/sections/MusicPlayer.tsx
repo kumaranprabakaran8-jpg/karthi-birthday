@@ -1,97 +1,243 @@
-import { useRef, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { HiPlay, HiPause, HiVolumeUp, HiChevronLeft, HiChevronRight } from 'react-icons/hi';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
+import { HiAdjustments, HiMusicNote, HiPause, HiPlay, HiVolumeOff, HiVolumeUp } from 'react-icons/hi';
 import { useApp } from '@/context/AppContext';
-import { MUSIC_PLAYLIST } from '@/config/site';
+
+const MUSIC_SRC = `${import.meta.env.BASE_URL}music/birthday.mp3`;
+const FADE_IN_DURATION = 1400;
 
 export function MusicPlayer() {
   const { state, dispatch } = useApp();
   const audioRef = useRef<HTMLAudioElement>(null);
-  const track = MUSIC_PLAYLIST[state.currentTrackIndex];
+  const audioContextRef = useRef<AudioContext | null>(null);
+  const gainNodeRef = useRef<GainNode | null>(null);
+  const musicVolumeRef = useRef(state.musicVolume);
+  const startPlaybackRef = useRef<() => void>(() => undefined);
+  const playbackRequestRef = useRef(0);
+  const [isMuted, setIsMuted] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [playbackError, setPlaybackError] = useState('');
+
+  const startPlayback = useCallback(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    const requestId = ++playbackRequestRef.current;
+    setPlaybackError('');
+    audio.muted = isMuted;
+    let resumeAudioContext = Promise.resolve();
+
+    if (typeof window.AudioContext !== 'undefined') {
+      if (!audioContextRef.current) {
+        const audioContext = new AudioContext();
+        const source = audioContext.createMediaElementSource(audio);
+        const gainNode = audioContext.createGain();
+        source.connect(gainNode);
+        gainNode.connect(audioContext.destination);
+        audioContextRef.current = audioContext;
+        gainNodeRef.current = gainNode;
+      }
+
+      const audioContext = audioContextRef.current;
+      if (audioContext.state === 'suspended') resumeAudioContext = audioContext.resume();
+      const gainNode = gainNodeRef.current;
+      if (gainNode) gainNode.gain.value = 0;
+      audio.volume = 1;
+    } else {
+      audio.volume = 0;
+    }
+
+    Promise.all([audio.play(), resumeAudioContext]).then(() => {
+      if (requestId !== playbackRequestRef.current || audio.paused) return;
+
+      dispatch({ type: 'SET_MUSIC_PLAYING', payload: true });
+      const fadeStartedAt = performance.now();
+      const fadeIn = (now: number) => {
+        if (audio.paused || !audio.isConnected) return;
+        const progress = Math.min((now - fadeStartedAt) / FADE_IN_DURATION, 1);
+        if (gainNodeRef.current) {
+          gainNodeRef.current.gain.value = musicVolumeRef.current * progress;
+        } else {
+          audio.volume = musicVolumeRef.current * progress;
+        }
+        if (progress < 1) requestAnimationFrame(fadeIn);
+      };
+
+      requestAnimationFrame(fadeIn);
+    }).catch((error: unknown) => {
+      if (requestId !== playbackRequestRef.current) return;
+      dispatch({ type: 'SET_MUSIC_PLAYING', payload: false });
+      setPlaybackError(
+        error instanceof DOMException && error.name === 'NotAllowedError'
+          ? 'Tap play to start your music.'
+          : 'Music could not be loaded. Check public/music/birthday.mp3.'
+      );
+    });
+  }, [dispatch, isMuted]);
 
   useEffect(() => {
-    if (!audioRef.current) return;
-    audioRef.current.volume = state.musicVolume;
-    if (state.musicPlaying) {
-      audioRef.current.play().catch(() => {});
-    } else {
-      audioRef.current.pause();
-    }
-  }, [state.musicPlaying, state.musicVolume, state.currentTrackIndex]);
+    startPlaybackRef.current = startPlayback;
+  }, [startPlayback]);
 
-  const togglePlay = () => dispatch({ type: 'SET_MUSIC_PLAYING', payload: !state.musicPlaying });
+  useEffect(() => {
+    const startAfterInteraction = (event: Event) => {
+      if (event.target instanceof Element && event.target.closest('[data-music-toggle]')) return;
+
+      document.removeEventListener('pointerdown', startAfterInteraction);
+      document.removeEventListener('keydown', startAfterKeydown);
+      startPlaybackRef.current();
+    };
+
+    const startAfterKeydown = (event: KeyboardEvent) => {
+      if (['Tab', 'Shift', 'Control', 'Alt', 'Meta'].includes(event.key)) return;
+      startAfterInteraction(event);
+    };
+
+    document.addEventListener('pointerdown', startAfterInteraction);
+    document.addEventListener('keydown', startAfterKeydown);
+    return () => {
+      document.removeEventListener('pointerdown', startAfterInteraction);
+      document.removeEventListener('keydown', startAfterKeydown);
+    };
+  }, []);
+
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+    musicVolumeRef.current = state.musicVolume;
+    if (gainNodeRef.current) {
+      gainNodeRef.current.gain.value = state.musicVolume;
+    } else {
+      audio.volume = state.musicVolume;
+    }
+    audio.muted = isMuted;
+  }, [isMuted, state.musicVolume]);
+
+  const togglePlayback = () => {
+    const audio = audioRef.current;
+    if (state.musicPlaying || (audio && !audio.paused)) {
+      playbackRequestRef.current += 1;
+      audio?.pause();
+      dispatch({ type: 'SET_MUSIC_PLAYING', payload: false });
+      return;
+    }
+
+    startPlayback();
+  };
+
+  const handleAudioError = () => {
+    dispatch({ type: 'SET_MUSIC_PLAYING', payload: false });
+    setPlaybackError('Music could not be loaded. Check public/music/birthday.mp3.');
+  };
 
   return (
-    <motion.div
-      initial={{ y: 100, opacity: 0 }}
-      animate={{ y: 0, opacity: 1 }}
-      transition={{ delay: 2 }}
-      className="fixed bottom-6 left-6 z-[9980] max-w-xs w-full"
-    >
-      <div className="glass-gold rounded-2xl p-4 shadow-luxury">
-        <audio ref={audioRef} src={track.url} loop={false} onEnded={() => dispatch({ type: 'NEXT_TRACK', max: MUSIC_PLAYLIST.length })} />
+    <>
+      <audio
+        ref={audioRef}
+        src={MUSIC_SRC}
+        className="hidden"
+        loop
+        preload="none"
+        playsInline
+        onError={handleAudioError}
+      />
 
-        <div className="flex items-center gap-3 mb-3">
-          <div className="w-10 h-10 rounded-full bg-gold-gradient flex items-center justify-center text-luxury-black font-bold text-sm">
-            ♪
-          </div>
-          <div className="flex-1 min-w-0">
-            <p className="font-sans text-sm font-medium truncate">{track.title}</p>
-            <p className="font-sans text-xs opacity-50 truncate">{track.artist}</p>
-          </div>
-        </div>
+      {state.isUnlocked && (
+        <div
+          className="fixed bottom-5 right-4 z-[10010] flex flex-col items-end gap-3 sm:bottom-6 sm:right-6"
+        >
+          <AnimatePresence>
+            {isExpanded && (
+              <motion.div
+                initial={{ opacity: 0, y: 12, scale: 0.96 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: 8, scale: 0.96 }}
+                transition={{ duration: 0.2 }}
+                className="glass-gold w-[min(18rem,calc(100vw-2rem))] rounded-2xl p-4 shadow-luxury"
+              >
+                <div className="mb-4 flex items-center justify-between gap-3">
+                  <div className="min-w-0">
+                    <p className="truncate font-display text-sm text-luxury-gold-light">
+                      A Little Birthday Melody
+                    </p>
+                    <p className="font-sans text-xs opacity-60">Original instrumental</p>
+                  </div>
+                  <button
+                    type="button"
+                    data-music-toggle
+                    onClick={togglePlayback}
+                    className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-gold-gradient text-luxury-black transition-transform hover:scale-105"
+                    aria-label={state.musicPlaying ? 'Pause background music' : 'Play background music'}
+                  >
+                    {state.musicPlaying ? <HiPause size={17} /> : <HiPlay size={17} />}
+                  </button>
+                </div>
 
-        <div className="flex items-center justify-center gap-4 mb-3">
-          <button
-            onClick={() => dispatch({ type: 'PREV_TRACK', max: MUSIC_PLAYLIST.length })}
-            className="p-1 hover:text-luxury-gold transition-colors"
-            aria-label="Previous track"
-          >
-            <HiChevronLeft size={20} />
-          </button>
-          <button
-            onClick={togglePlay}
-            className="w-10 h-10 rounded-full bg-gold-gradient flex items-center justify-center text-luxury-black"
-            aria-label={state.musicPlaying ? 'Pause' : 'Play'}
-          >
-            {state.musicPlaying ? <HiPause size={18} /> : <HiPlay size={18} />}
-          </button>
-          <button
-            onClick={() => dispatch({ type: 'NEXT_TRACK', max: MUSIC_PLAYLIST.length })}
-            className="p-1 hover:text-luxury-gold transition-colors"
-            aria-label="Next track"
-          >
-            <HiChevronRight size={20} />
-          </button>
-        </div>
+                <div className="flex items-center gap-3">
+                  <button
+                    type="button"
+                    onClick={() => setIsMuted((muted) => !muted)}
+                    className="rounded-full p-1 text-luxury-gold transition-colors hover:text-luxury-gold-light"
+                    aria-label={isMuted ? 'Unmute background music' : 'Mute background music'}
+                    aria-pressed={isMuted}
+                  >
+                    {isMuted || state.musicVolume === 0 ? <HiVolumeOff size={19} /> : <HiVolumeUp size={19} />}
+                  </button>
+                  <input
+                    type="range"
+                    min="0"
+                    max="1"
+                    step="0.05"
+                    value={state.musicVolume}
+                    onChange={(event) =>
+                      dispatch({ type: 'SET_VOLUME', payload: Number.parseFloat(event.target.value) })
+                    }
+                    className="w-full accent-luxury-gold"
+                    aria-label="Background music volume"
+                  />
+                </div>
 
-        <div className="flex items-center gap-2">
-          <HiVolumeUp size={16} className="opacity-50 shrink-0" />
-          <input
-            type="range"
-            min="0"
-            max="1"
-            step="0.05"
-            value={state.musicVolume}
-            onChange={(e) => dispatch({ type: 'SET_VOLUME', payload: parseFloat(e.target.value) })}
-            className="w-full accent-luxury-gold"
-            aria-label="Volume"
-          />
-        </div>
+                {playbackError && (
+                  <p role="status" className="mt-3 text-xs leading-relaxed text-luxury-gold-light/80">
+                    {playbackError}
+                  </p>
+                )}
+              </motion.div>
+            )}
+          </AnimatePresence>
 
-        <div className="mt-2 flex gap-1">
-          {MUSIC_PLAYLIST.map((t, i) => (
+          <div className="flex items-center gap-2">
             <button
-              key={t.id}
-              onClick={() => dispatch({ type: 'SET_TRACK', payload: i })}
-              className={`flex-1 h-1 rounded-full transition-colors ${
-                i === state.currentTrackIndex ? 'bg-luxury-gold' : 'bg-white/10'
-              }`}
-              aria-label={`Track ${i + 1}`}
-            />
-          ))}
+              type="button"
+              data-music-toggle
+              onClick={togglePlayback}
+              className="relative flex h-14 w-14 items-center justify-center rounded-full border border-luxury-gold/40 bg-gold-gradient text-luxury-black shadow-luxury transition-transform hover:scale-105 active:scale-95"
+              aria-label={state.musicPlaying ? 'Pause background music' : 'Play background music'}
+              aria-pressed={state.musicPlaying}
+              title={playbackError || undefined}
+            >
+              <motion.span
+                animate={state.musicPlaying ? { rotate: [0, -9, 9, 0], y: [0, -2, 0] } : { rotate: 0, y: 0 }}
+                transition={state.musicPlaying ? { duration: 1.8, repeat: Infinity, ease: 'easeInOut' } : { duration: 0.2 }}
+              >
+                <HiMusicNote size={23} />
+              </motion.span>
+              <span className="absolute bottom-1 right-1 flex h-5 w-5 items-center justify-center rounded-full border border-luxury-gold/30 bg-luxury-black text-luxury-gold-light">
+                {state.musicPlaying ? <HiPause size={10} /> : <HiPlay size={10} />}
+              </span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setIsExpanded((expanded) => !expanded)}
+              className="flex h-10 w-10 items-center justify-center rounded-full border border-luxury-gold/20 bg-luxury-black/80 text-luxury-gold shadow-glass backdrop-blur-xl transition-colors hover:bg-luxury-gold/10"
+              aria-label={isExpanded ? 'Hide music controls' : 'Show music controls'}
+              aria-expanded={isExpanded}
+            >
+              <HiAdjustments size={19} />
+            </button>
+          </div>
         </div>
-      </div>
-    </motion.div>
+      )}
+    </>
   );
 }

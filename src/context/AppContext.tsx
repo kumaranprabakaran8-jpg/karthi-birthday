@@ -35,7 +35,7 @@ const getInitialState = (): AppState => {
   if (saved) {
     try {
       const parsed = JSON.parse(saved);
-      return { ...defaultState, ...parsed, showLoading: true };
+      return { ...defaultState, ...parsed, musicPlaying: false, showLoading: true };
     } catch {
       /* ignore */
     }

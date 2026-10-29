@@ -8,6 +8,7 @@ import { ScrollToTop } from '@/components/layout/ScrollToTop';
 import { FloatingParticles } from '@/components/effects/Particles';
 import { PasswordScreen } from '@/components/sections/PasswordScreen';
 import { CinematicIntro } from '@/components/sections/CinematicIntro';
+import { MusicPlayer } from '@/components/sections/MusicPlayer';
 import { CelebrationPage } from '@/pages/CelebrationPage';
 import { SITE_CONFIG } from '@/config/site';
 
@@ -45,6 +46,7 @@ export default function App() {
   return (
     <>
       <LoadingScreen />
+      <MusicPlayer />
       {!state.showLoading && (
         <>
           <ScrollProgressBar />
