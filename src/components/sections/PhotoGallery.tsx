@@ -83,9 +83,7 @@ export function PhotoGallery() {
               </p>
               <h3 className="font-display text-2xl sm:text-3xl text-luxury-gold-light mb-3">{img.caption}</h3>
               <p className="font-body text-sm sm:text-base text-luxury-white/80 leading-relaxed">
-                {index === 0 && 'A moment so beautiful, it feels like the universe paused just to let us keep it.'}
-                {index === 1 && 'Every hand in hand step, every smile, every glance — all of it became part of our story.'}
-                {index === 2 && 'A tiny little promise of love, wrapped in joy, warmth, and the dream of forever.'}
+                {img.description}
               </p>
             </div>
           </motion.div>

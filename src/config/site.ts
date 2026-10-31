@@ -1,6 +1,6 @@
-import memory1 from '../../cutey/kmmm.jpeg';
-import memory2 from '../../cutey/kmm.jpeg';
-import memory3 from '../../cutey/km.jpeg';
+import portraitPhoto from '../../cutey/kmmm.jpeg';
+import couplePhoto from '../../cutey/kmm.jpeg';
+import handHoldingPhoto from '../../cutey/km.jpeg';
 
 export const SITE_CONFIG = {
   recipientName: 'KARTHI',
@@ -93,21 +93,24 @@ export const TIMELINE = [
 export const GALLERY_IMAGES = [
   {
     id: 1,
-    src: memory2,
-    alt: 'An illustrated portrait of the two of you together',
-    caption: 'Our little world, together',
+    src: portraitPhoto,
+    alt: 'Karthi enjoying a sunny day on his motorcycle',
+    caption: 'A star in every frame',
+    description: 'A moment so beautiful, it feels like the universe paused just to let us keep it.',
   },
   {
     id: 2,
-    src: memory1,
-    alt: 'An illustrated moment holding hands',
-    caption: 'Every moment, hand in hand',
+    src: couplePhoto,
+    alt: 'An illustration of the two of you together in a car at sunset',
+    caption: 'Our little world, together',
+    description: 'Every shared smile and glance becomes another favorite part of our story.',
   },
   {
     id: 3,
-    src: memory3,
-    alt: 'A couple making heart gestures with their hands',
-    caption: 'A little heart, just for you',
+    src: handHoldingPhoto,
+    alt: 'An illustration of the two of you holding hands',
+    caption: 'Every moment, hand in hand',
+    description: 'A tiny little promise of love, wrapped in joy, warmth, and the dream of forever.',
   },
 ];
 
